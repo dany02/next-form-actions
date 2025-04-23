@@ -27,9 +27,9 @@ const loginSchema = z.object({
 
 export async function loginForm(prevState:any, formData: FormData) {
     const data = {
-        email: formData.get("email")?.toString() || "",
-        username: formData.get("username")?.toString() || "",
-        password: formData.get("password")?.toString() || "",
+        email: formData.get("email"),
+        username: formData.get("username"),
+        password: formData.get("password"),
     };
 
     const result = loginSchema.safeParse(data);
