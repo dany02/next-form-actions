@@ -1,37 +1,14 @@
 "use client";
 import FormBtn from "@/components/form-btn";
 import FormInput from "@/components/form-input";
-import { EnvelopeIcon, KeyIcon, UserIcon } from "@heroicons/react/16/solid";
-import { FireIcon } from "@heroicons/react/24/solid";
-import { useFormState } from "react-dom";
-import { handleForm } from "./action";
-import { useEffect, useState } from "react";
-import React from "react";
+import { EnvelopeIcon, KeyIcon, UserIcon, FireIcon } from "@heroicons/react/16/solid";
+import { loginForm } from "./action";
+import React, { useActionState } from "react";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 
-export default function Home() {
-    const [state, action] = useFormState(handleForm, null);
-	
-    const [form, setForm] = useState({
-        email: state?.values?.email || "",
-        username: state?.values?.username || "",
-        password: state?.values?.password || "",
-    });
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
 
-    useEffect(() => {
-        setForm({
-            email: state?.values?.email || "",
-            username: state?.values?.username || "",
-            password: state?.values?.password || "",
-        });
-    }, [state?.values]);
+export default function Home() {
+    const [state, action] = useActionState(loginForm, null);
 
     return (
         <div className="w-d min-h-screen flex justify-center">
@@ -39,34 +16,31 @@ export default function Home() {
                 <FireIcon className="size-16 text-red-400 mx-auto mb-8" />
                 <form action={action} className="flex flex-col gap-4">
                     <FormInput
-                        customHtml={<EnvelopeIcon />}
-                        onChange={handleChange}
+                        iconHtml={<EnvelopeIcon />}
                         type="email"
                         placeholder="Email"
                         name="email"
-                        defaultValue={form.email}
+                        defaultValue={state?.default?.email as string}
                         required
-                        errors={[]}
+                        errors={state?.errors?.fieldErrors.email}
                     />
                     <FormInput
-                        customHtml={<UserIcon />}
-                        onChange={handleChange}
+                        iconHtml={<UserIcon />}
                         type="text"
                         placeholder="Username"
                         name="username"
-                        defaultValue={form.username}
+                        defaultValue={state?.default?.username as string}
                         required
-                        errors={[]}
+                        errors={state?.errors?.fieldErrors.username}
                     />
                     <FormInput
-                        customHtml={<KeyIcon />}
-                        onChange={handleChange}
+                        iconHtml={<KeyIcon />}
                         type="password"
                         placeholder="Password"
                         name="password"
-                        defaultValue={form.password}
+                        defaultValue={state?.default?.password as string}
                         required
-                        errors={state?.errors ?? []}
+                        errors={state?.errors?.fieldErrors.password}
                     />
 
                     <FormBtn text="Log in" />

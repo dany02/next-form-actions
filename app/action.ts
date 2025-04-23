@@ -1,25 +1,51 @@
 "use server";
-export async function handleForm(prevState:any, formData:FormData){
-	await new Promise((resolve) => setTimeout(resolve,3000));
-	const data = {
-		email: formData.get("email")?.toString() || '',
-		username: formData.get("username")?.toString() || '',
-		password: formData.get("password")?.toString() || '',
 
-	}
+import { z } from "zod";
 
-	if(formData.get("password") !== '12345'){
-		return {
-			errors:["wrong password",],
-			success: false,
-			values: data
-		};
+const passwordRegex = new RegExp(/(?=.*\d)/);
+const checkEmail = (email: string) => email.endsWith("@zod.com");
 
+const loginSchema = z.object({
+    email: z
+        .string()
+        .email()
+		.trim()
+		.toLowerCase()
+        .refine(
+            checkEmail,
+            "Only @zod.com emails are allowed"
+        ),
+    username: z
+        .string()
+        .min(5, { message: "Username should be at least 5 characters long." }),
+    password: z
+        .string()
+        .min(10, { message: "Password should be at least 10 characters long." })
+        .regex(passwordRegex, "Password should contain at least one number(0123456789)."),
+});
+
+
+
+export async function loginForm(prevState:any, formData: FormData) {
+    const data = {
+        email: formData.get("email"),
+        username: formData.get("username"),
+        password: formData.get("password"),
+    };
+
+    const result = loginSchema.safeParse(data);
+
+	if(!result.success){
+		return{
+			default: data,
+			errors: result.error.flatten(),
+			success: result.success,
+		}
 	}else{
 		return {
-			errors:[],
-			success: true,
+			default: data,
+			success: result.success,
 		};
 		
 	}
-};
+}
