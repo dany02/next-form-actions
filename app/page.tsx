@@ -4,7 +4,7 @@ import FormInput from "@/components/form-input";
 import { EnvelopeIcon, KeyIcon, UserIcon, FireIcon } from "@heroicons/react/16/solid";
 import { loginForm } from "./action";
 import React, { useActionState } from "react";
-import { CheckBadgeIcon } from "@heroicons/react/24/outline";
+import SuccessMessage from "@/components/success-message";
 
 
 export default function Home() {
@@ -45,7 +45,7 @@ export default function Home() {
 
                     <FormBtn text="Log in" />
                 </form>
-				{state?.success ? (<div className="flex mt-2.5 p-3.5 text-black rounded-2xl bg-green-500"><CheckBadgeIcon className="size-6 mr-4"/>Welcome Back!</div>): null}
+				{state?.success && <SuccessMessage/>}
             </div>
         </div>
     );

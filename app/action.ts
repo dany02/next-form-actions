@@ -25,15 +25,15 @@ const loginSchema = z.object({
 });
 
 
-
 export async function loginForm(prevState:any, formData: FormData) {
     const data = {
-        email: formData.get("email"),
-        username: formData.get("username"),
-        password: formData.get("password"),
+        email: formData.get("email")?.toString() || "",
+        username: formData.get("username")?.toString() || "",
+        password: formData.get("password")?.toString() || "",
     };
 
     const result = loginSchema.safeParse(data);
+
 
 	if(!result.success){
 		return{
@@ -41,11 +41,10 @@ export async function loginForm(prevState:any, formData: FormData) {
 			errors: result.error.flatten(),
 			success: result.success,
 		}
-	}else{
-		return {
-			default: data,
-			success: result.success,
-		};
-		
+	}
+
+	return{
+		default: data,
+		success: result.success,
 	}
 }

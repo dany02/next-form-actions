@@ -2,7 +2,7 @@
 import React, { InputHTMLAttributes } from "react";
 
 interface IFormInput {
-	iconHtml: React.ReactElement;
+	iconHtml: React.ReactNode;
 	name: string;
 	errors?: string[];
 }
@@ -12,11 +12,15 @@ export default function FormInput({iconHtml, name,  errors = [], ...rest}: IForm
     return (
 		<>
 			<div className="relative">
-				{React.Children.map(iconHtml, (child) => 
+				<label htmlFor={name} className="absolute left-4 top-2/4 text-neutral-600 translate-y-[-50%] *:size-4">
+					{iconHtml}
+				</label>
+				{/* {React.Children.map(iconHtml, (child) => 
 					React.isValidElement(child) ? React.cloneElement(child as React.ReactElement<any>, 
-					{ className: 'absolute left-4 top-2/4 size-4 text-neutral-600 translate-y-[-50%]' }) : child
-				)}
+					{ className: '' }) : child
+				)} */}
 				<input
+					id={name}
 					name={name}
 					{...rest}
 					className={`w-full h-12 pl-12 pr-5 text-sm font-medium rounded-full border-[1px] border-neutral-400
