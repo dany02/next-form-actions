@@ -28,7 +28,7 @@ body {
 
 @layer components {
 	.basic-btn {
-		@apply w-full h-12 text-sm font-bold rounded-full bg-neutral-200 cursor-pointer;
+		@apply w-full h-12 text-sm font-bold rounded-full text-stone-600 bg-neutral-200 cursor-pointer;
 	}
 }
 

@@ -3,12 +3,14 @@ import {
     PASSWORD_MIN_LENGTH,
     PASSWORD_REGEX,
     PASSWORD_REGEX_ERROR,
+	USERNAME_MIN_LENGTH,
 } from "@/lib/constants";
 import db from "@/lib/db";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
+import { isEmailExist, isUsernameExist } from "@/service/userService";
 
 
 const checkPasswords = ({
@@ -23,23 +25,22 @@ const checkPasswords = ({
 
 const formSchema = z
     .object({
-        username: z.string().trim().toLowerCase(),
-        email: z.string().email().trim().toLowerCase(),
+        username: z.string({
+			invalid_type_error: "Username must be a string.",
+			required_error: "Username is required.",
+		  }).trim().min(USERNAME_MIN_LENGTH, `Username should be at least ${USERNAME_MIN_LENGTH} characters long.`),
+        email: z.string({
+			required_error: "Email is required.",
+		  }).email("Please enter a valid email address.").trim()
+		  .refine((email) => email.includes("@zod.com"), "Only @zod.com email addresses are allowed."),
         password: z
             .string()
-            .min(PASSWORD_MIN_LENGTH)
+            .min(PASSWORD_MIN_LENGTH, `Password should be at least ${PASSWORD_MIN_LENGTH} characters long.`)
             .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
         confirm_password: z.string().min(PASSWORD_MIN_LENGTH),
     })
 	.superRefine(async({username}, ctx)=>{
-		const user = await db.user.findUnique({
-			where: {
-				username
-			},
-			select: {
-				id:true
-			}
-		});
+		const user = await isUsernameExist(username);
 		if(user){
 			ctx.addIssue({
 				code: 'custom',
@@ -51,14 +52,7 @@ const formSchema = z
 		}
 	})
 	.superRefine((async({email}, ctx)=>{
-		const user = await db.user.findUnique({
-			where: {
-				email
-			},
-			select: {
-				id:true
-			}
-		});
+		const user = await isEmailExist(email);
 		if(user){
 			ctx.addIssue({
 				code:'custom',
@@ -104,6 +98,6 @@ export async function createAccount(prevState: any, formData: FormData) {
 		 const session = await getSession();
 		 session.id = user.id;
 		 await session.save();
-		 redirect("/"); 
+		 redirect("/profile"); 
 	}
 }
