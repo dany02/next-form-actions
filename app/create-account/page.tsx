@@ -10,7 +10,7 @@ import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 export default function CreateAccount() {
     const [state, dispatch] = useActionState(createAccount, null);
     return (
-        <div className="w-d min-h-screen flex justify-center">
+        <div className="min-h-screen flex justify-center">
             <div className="w-md min-h-screen pt-40">
                 <form action={dispatch} className="flex flex-col gap-4">
                     <Input

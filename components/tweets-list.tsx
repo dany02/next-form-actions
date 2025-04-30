@@ -10,13 +10,12 @@ interface TweetsListProps {
 export default function TweetsList({ initialTweets }: TweetsListProps) {
 	const take = 5;
     const [tweets, setTweets] = useState(initialTweets);
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [isLastPage, setIsLastPage] = useState(false);
 
     const prevClick = () => {
-		console.log(page);
-        if (page !== 0 && !isLoading) {
+        if (page !== 1 && !isLoading) {
             setPage((prev) => prev - 1);
         }
     };
@@ -36,6 +35,7 @@ export default function TweetsList({ initialTweets }: TweetsListProps) {
 				setIsLastPage(false);
 			  } else {
 				const newTweets = await getMoreTweets(page, take);
+				console.log(newTweets);
 				const isLast = newTweets.length <= 5;
 				setTweets(newTweets.slice(0, 5));
 				setIsLastPage(isLast);
@@ -49,14 +49,14 @@ export default function TweetsList({ initialTweets }: TweetsListProps) {
     }, [page]);
 
     return (
-        <div className="p-3 flex flex-col w-md min-h-screen gap-3">
+        <div className="py-5 flex flex-col min-h-screen gap-3">
             {tweets.map((tweet, index) => (
                 <ListTweets key={index} {...tweet} />
             ))}
             <div className="flex justify-between items-center mt-8">
                 <button
-					disabled={page === 0}
-                    className={`px-4 py-2 border rounded ${page === 0 ? `bg-gray-200 text-white cursor-not-allowed` : `bg-white cursor-pointer`}`}
+					disabled={page === 1}
+                    className={`px-4 py-2 border rounded ${page === 1 ? `bg-gray-200 text-white cursor-not-allowed` : `bg-white cursor-pointer`}`}
                     onClick={prevClick}
                 >
                     PREV
