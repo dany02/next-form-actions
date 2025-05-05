@@ -1,51 +1,28 @@
 "use client";
-import { InitialProducts } from "@/app/page";
 import { useEffect, useState } from "react";
 import ListTweets from "./list-tweets";
-import { getMoreTweets } from "@/app/action";
+import {
+    getPaginatedTweets,
+    getTweetsByPage,
+    InitialProducts,
+} from "@/service/tweetService";
 
 interface TweetsListProps {
     initialTweets: InitialProducts;
 }
 export default function TweetsList({ initialTweets }: TweetsListProps) {
-	const take = 5;
     const [tweets, setTweets] = useState(initialTweets);
     const [page, setPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
     const [isLastPage, setIsLastPage] = useState(false);
 
-    const prevClick = () => {
-        if (page !== 1 && !isLoading) {
-            setPage((prev) => prev - 1);
-        }
-    };
-
-    const nextClick = () => {
-		if (!isLastPage && !isLoading) {
-			setPage((prev) => prev + 1);
-		  }
-    };
-
     useEffect(() => {
-		const fetchTweets = async () => {
-			setIsLoading(true);
+        const fetchTweets = async () => {
+			const { tweets, isLastPage } = await getPaginatedTweets(page);
+			setTweets(tweets);
+			setIsLastPage(isLastPage);
+        };
 
-			if (page === 0) {
-				setTweets(initialTweets.slice(0, 5));
-				setIsLastPage(false);
-			  } else {
-				const newTweets = await getMoreTweets(page, take);
-				console.log(newTweets);
-				const isLast = newTweets.length <= 5;
-				setTweets(newTweets.slice(0, 5));
-				setIsLastPage(isLast);
-			  }
-		
-			setIsLoading(false);
-		  };
-		
-
-		fetchTweets();
+        fetchTweets();
     }, [page]);
 
     return (
@@ -55,16 +32,24 @@ export default function TweetsList({ initialTweets }: TweetsListProps) {
             ))}
             <div className="flex justify-between items-center mt-8">
                 <button
-					disabled={page === 1}
-                    className={`px-4 py-2 border rounded ${page === 1 ? `bg-gray-200 text-white cursor-not-allowed` : `bg-white cursor-pointer`}`}
-                    onClick={prevClick}
+                    disabled={page === 1}
+                    className={`px-4 py-2 border rounded ${
+                        page === 1
+                            ? `bg-gray-200 text-white cursor-not-allowed`
+                            : `bg-white cursor-pointer`
+                    }`}
+                    onClick={() => setPage((prev) => prev === 1 ? prev : prev - 1)}
                 >
                     PREV
                 </button>
                 <button
-                    onClick={nextClick}
-					disabled={isLastPage}
-                    className={`px-4 py-2 border rounded ${isLastPage ? `bg-gray-200 text-white cursor-not-allowed` : `bg-white cursor-pointer`}`}
+                    onClick={() =>  setPage((prev) => isLastPage ? prev : prev + 1)}
+                    disabled={isLastPage}
+                    className={`px-4 py-2 border rounded ${
+                        isLastPage
+                            ? `bg-gray-200 text-white cursor-not-allowed`
+                            : `bg-white cursor-pointer`
+                    }`}
                 >
                     NEXT
                 </button>

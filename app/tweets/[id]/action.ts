@@ -1,8 +1,8 @@
 "use server";
 import db from "@/lib/db";
+import { responseSchema } from "@/lib/scehma";
 import getSession from "@/lib/session";
 import { revalidateTag } from "next/cache";
-import { z } from "zod";
 
 
 export async function likeTweet(tweetId:number){
@@ -33,37 +33,37 @@ export async function dislikeTweet(tweetId:number){
 	}catch(e){console.log("err");}
 };
 
-const contentSchema = z.string({required_error: "Comment is required."}).trim();
+export async function addTweetResponse(formData:FormData){
+	console.log("hit!!!!!");
+	const text = formData.get("text");
+	const tweetId= formData.get("tweetId");
 
-export async function commentAction(_:any, formData:FormData){
-	const content = formData.get("content");
-	const tweetIdStr = formData.get("tweetId");
-	const tweetId = Number(tweetIdStr);
+	const result = responseSchema.safeParse(text);
 
-	const result = contentSchema.safeParse(content);
+	console.log(result.success);
 
 	if(!result.success){
 		return {
 			errors: result.error.flatten(),
 		}
 	}else{
-		console.log(result.data)
 		const session = await getSession();
 		try{
-			await db.comment.create({
-				data:{
-					content: result.data,
-					userId: session.id!,
-					tweetId: tweetId,
-				},
-				select: {
-					id:true,
-				}			
-			});
-			revalidateTag(`tweet-${tweetId}`);
+			if(session.id){
+				await db.response.create({
+					data:{
+						text: result.data,
+						userId: session.id!,
+						tweetId: Number(tweetId),
+					},		
+				});
+			}
+			
 		}catch(e){}
+		revalidateTag(`tweet-responses-${tweetId}`);
 		
 	}
 
 
 }
+

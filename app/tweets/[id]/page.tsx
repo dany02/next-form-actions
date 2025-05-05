@@ -1,17 +1,18 @@
-import Comments from "@/components/comments";
 import LikeButton from "@/components/like-button";
 import db from "@/lib/db";
+import { Prisma } from "@/lib/generated/prisma/client";
 import getSession from "@/lib/session";
 import { formatCreateDate } from "@/lib/utils";
 import { unstable_cache as nextCache } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Responses from "@/components/responses";
 
-async function getTweets(id: number) {
+async function getTweets(tweetId: number) {
     try {
         const tweet = await db.tweet.findUnique({
             where: {
-                id,
+                id: tweetId,
             },
             include: {
                 user: {
@@ -66,51 +67,38 @@ async function getCachedLikeStatus(tweetId: number) {
     return cachedOperation(tweetId, userId);
 }
 
-async function getComments(tweetId: number, userId:number) {
-    const comments = await db.comment.findMany({
+async function getResponses(tweetId: number) {
+    const responses = await db.response.findMany({
         where: {
             tweetId,
-            userId,
         },
-        include: {
-            user: {
-                select: {
-                    username: true,
-                },
-            },
-        },
-    });
-    return comments;
-}
-async function getCachedComments(tweetId: number) {
-    const session = await getSession();
-    const userId = session.id!;
-    const cachedOperation = nextCache(getComments, ["tweet-comments"], {
-        tags: [`tweet-${tweetId}`],
-    });
-	return cachedOperation(tweetId, userId);
-}
-
-async function getUser() {
-	const session = await getSession();
-    const user = await db.user.findMany({
-        where: {
-            id: session.id!,
-        },
-        select: {
+		select:{
 			id:true,
-			username:true,
-		}
+			text: true,
+			created_at: true,
+			user: {
+				select: {
+					id:true,
+					username:true,
+				}
+			}
+		},
     });
-    return user;
+    return responses;
+}
+async function getCachedResponses(tweetId: number) {
+    const cachedOperation = nextCache(getResponses, ["tweet-responses"], {
+        tags: [`tweet-responses-${tweetId}`],
+    });
+	return cachedOperation(tweetId);
 }
 
-
+export type InitialResponses = Prisma.PromiseReturnType<typeof getResponses>;
 
 export default async function TweetsDetail({
     params,
 }: {
-    params: { id: string };
+    params: { id: string }
 }) {
     const id = Number(params.id);
     if (isNaN(id)) {
@@ -122,11 +110,7 @@ export default async function TweetsDetail({
     }
 
     const { likeCount, isLiked } = await getCachedLikeStatus(id);
-	const comments = await getCachedComments(id);
-	const users = await getUser();
-	const username = users[0]?.username ?? 'Unknown';
-	const userId = users[0]?.id ?? 'Unknown';
-
+	const responses = await getCachedResponses(id);
 
     return (
         <div className="min-h-screen flex justify-center">
@@ -160,7 +144,7 @@ export default async function TweetsDetail({
                             tweetId={id}
                         />
 						{/* 댓글 영역 */}
-						<Comments  comments={comments} username={username} id={id} userId={userId}/>
+						<Responses  initialResponses={responses} tweetId={tweets.id} username={tweets.user.username}/>
                     </div>
                 </div>
             </div>

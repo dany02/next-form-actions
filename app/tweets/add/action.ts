@@ -24,7 +24,7 @@ export async function uploadTweets(_:any, formData:FormData){
 	}else{
 		const session = await getSession();
 		if(session.id){
-			const tweets = await db.tweet.create({
+			const tweet = await db.tweet.create({
 				data: {
 					tweet: result.data.tweet,
 					user: {
@@ -32,13 +32,11 @@ export async function uploadTweets(_:any, formData:FormData){
 							id:session.id,
 						}
 					}
-				},
-				select:{
-					id:true,
 				}
 			});
+			redirect(`/tweets/${tweet.id}`);
 		}
-		redirect("/");		 
+				 
 	}
 
 }
