@@ -12,8 +12,6 @@ import React, { useActionState } from "react";
 import SuccessMessage from "@/components/success-message";
 import Link from "next/link";
 
-export const runtime = "nodejs";
-
 export default function Login() {
     const [state, dispatch] = useActionState(loginForm, null);
 

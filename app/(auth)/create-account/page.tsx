@@ -7,8 +7,6 @@ import Button from "@/components/button";
 import { useActionState } from "react";
 import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 
-export const runtime = "nodejs";
-
 export default function CreateAccount() {
     const [state, dispatch] = useActionState(createAccount, null);
     return (
