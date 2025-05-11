@@ -6,7 +6,7 @@ import Link from "next/link";
 export const metadata = {
     title: "TWEETS",
 };
-
+export const dynamic = "force-dynamic";
 export default async function Home() {
     const initialTweets = await getInitialTweets();
 
