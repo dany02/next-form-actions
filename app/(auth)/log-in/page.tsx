@@ -8,7 +8,7 @@ import {
     FireIcon,
 } from "@heroicons/react/16/solid";
 import { loginForm } from "./action";
-import React, { useActionState, useEffect } from "react";
+import React, { useActionState } from "react";
 import SuccessMessage from "@/components/success-message";
 import Link from "next/link";
 

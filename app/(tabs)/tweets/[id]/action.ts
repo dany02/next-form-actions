@@ -15,7 +15,7 @@ export async function likeTweet(tweetId: number) {
             },
         });
         revalidateTag(`tweet-like-${tweetId}`);
-    } catch (e) {}
+    } catch (e) {console.log("err");}
 }
 
 export async function dislikeTweet(tweetId: number) {
@@ -59,7 +59,7 @@ export async function addTweetResponse(formData: FormData) {
                     },
                 });
             }
-        } catch (e) {}
+        } catch (e) {console.log("err");}
         revalidateTag(`tweet-responses-${tweetId}`);
     }
 }
