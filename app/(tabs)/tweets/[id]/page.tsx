@@ -1,6 +1,6 @@
 import LikeButton from "@/components/like-button";
 import db from "@/lib/db";
-import { Prisma } from "@/lib/generated/prisma/client";
+import { Prisma } from "@prisma/client";
 import getSession from "@/lib/session";
 import { formatCreateDate } from "@/lib/utils";
 import { unstable_cache as nextCache } from "next/cache";
