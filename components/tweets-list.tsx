@@ -1,11 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import ListTweets from "./list-tweets";
-import {
-    getPaginatedTweets,
-    getTweetsByPage,
-    InitialProducts,
-} from "@/service/tweetService";
+import { getPaginatedTweets, InitialProducts } from "@/service/tweetService";
 
 interface TweetsListProps {
     initialTweets: InitialProducts;
@@ -17,41 +13,39 @@ export default function TweetsList({ initialTweets }: TweetsListProps) {
 
     useEffect(() => {
         const fetchTweets = async () => {
-			const { tweets, isLastPage } = await getPaginatedTweets(page);
-			setTweets(tweets);
-			setIsLastPage(isLastPage);
+            const { tweets, isLastPage } = await getPaginatedTweets(page);
+            setTweets(tweets);
+            setIsLastPage(isLastPage);
         };
 
         fetchTweets();
     }, [page]);
 
     return (
-        <div className="py-5 flex flex-col min-h-screen gap-3">
-            {tweets.map((tweet, index) => (
-                <ListTweets key={index} {...tweet} />
-            ))}
-            <div className="flex justify-between items-center mt-8">
+        <div className="py-5 flex flex-col gap-3">
+            <ul>
+                {tweets.map((tweet, index) => (
+                    <ListTweets key={index} {...tweet} />
+                ))}
+            </ul>
+            <div className="join w-70 mx-auto grid grid-cols-2">
                 <button
+                    onClick={() =>
+                        setPage((prev) => (prev === 1 ? prev : prev - 1))
+                    }
                     disabled={page === 1}
-                    className={`px-4 py-2 border rounded ${
-                        page === 1
-                            ? `bg-gray-200 text-white cursor-not-allowed`
-                            : `bg-white cursor-pointer`
-                    }`}
-                    onClick={() => setPage((prev) => prev === 1 ? prev : prev - 1)}
+                    className="join-item btn btn-outlin"
                 >
-                    PREV
+                    Previous page
                 </button>
                 <button
-                    onClick={() =>  setPage((prev) => isLastPage ? prev : prev + 1)}
+                    onClick={() =>
+                        setPage((prev) => (isLastPage ? prev : prev + 1))
+                    }
                     disabled={isLastPage}
-                    className={`px-4 py-2 border rounded ${
-                        isLastPage
-                            ? `bg-gray-200 text-white cursor-not-allowed`
-                            : `bg-white cursor-pointer`
-                    }`}
+                    className="join-item btn btn-outlin"
                 >
-                    NEXT
+                    Next
                 </button>
             </div>
         </div>

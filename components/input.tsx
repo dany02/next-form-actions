@@ -20,7 +20,7 @@ export default function Input({iconHtml, name,  errors = [], ...rest}: IInput & 
 					name={name}
 					{...rest}
 					className={`w-full h-12 pl-12 pr-5 text-sm font-medium rounded-full border-[1px] border-neutral-400
-										outline-0 focus:ring-1 ring-neutral-500 ring-offset-2 ${errors.length > 0 ? 'border-red-500 ring-red-500':''}`}
+										outline-0 focus:ring-1 ring-neutral-500 ring-offset-2 dark:text-white ${errors.length > 0 ? 'border-red-500 ring-red-500':''}`}
 				/>
 			</div>
 			{errors.map((error, index) => (

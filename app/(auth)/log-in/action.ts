@@ -5,32 +5,9 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
+import { checkEmailExists, checkUsernameExists } from "@/service/loginServise";
 
-const checkEmailExists = async (email: string) => {
-	const user = await db.user.findUnique({
-		where: {
-			email
-		},
-		select: {
-			id: true
-		}
-	});
 
-	return Boolean(user);
-};
-
-const checkUsernameExists = async (username: string) => {
-	const user = await db.user.findUnique({
-		where: {
-			username
-		},
-		select: {
-			id: true
-		}
-	});
-
-	return Boolean(user);
-}
 
 
 const loginSchema = z.object({

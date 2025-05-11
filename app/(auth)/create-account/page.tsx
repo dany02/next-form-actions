@@ -11,7 +11,7 @@ export default function CreateAccount() {
     const [state, dispatch] = useActionState(createAccount, null);
     return (
         <div className="min-h-screen flex justify-center">
-            <div className="w-md min-h-screen pt-40">
+            <div className="w-md pt-40">
                 <form action={dispatch} className="flex flex-col gap-4">
                     <Input
                         iconHtml={<UserIcon />}

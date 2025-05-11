@@ -1,8 +1,8 @@
 "use client";
-import { dislikeTweet, likeTweet } from "@/app/tweets/[id]/action";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { HeartIcon as OutlineHeartIcon } from "@heroicons/react/24/outline";
 import { useOptimistic } from "react";
+import { dislikeTweet, likeTweet } from "@/app/(tabs)/tweets/[id]/action";
 
 interface LikeButton {
     likeCount: number;
@@ -38,10 +38,10 @@ export default function LikeButton({
         <button
             onClick={onClick}
             className={`px-3 py-2 flex items-center gap-2 border-[1px] border-neutral-400 rounded-full text-[13px]
-	 hover:bg-neutral-200 transition-all`}
+	 hover:bg-neutral-200 transition-all mb-3 dark:text-white`}
         >
             {state.isLiked ? (
-                <HeartIcon className={`size-5 text-red-500`} />
+                <HeartIcon className={`size-5 text-red-500 dark:stroke-white`} />
             ) : (
                 <OutlineHeartIcon className={`size-5 stroke-2 text-gray-500`} />
             )}

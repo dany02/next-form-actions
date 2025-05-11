@@ -4,10 +4,22 @@ import { Prisma } from "@/lib/generated/prisma/client";
 import getSession from "@/lib/session";
 import { formatCreateDate } from "@/lib/utils";
 import { unstable_cache as nextCache } from "next/cache";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import Responses from "@/components/responses";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { deleteTweet } from "./action";
 
+export const metadata = {
+	title: "Tweets Detail",
+}
+
+async function getIsOwner(userId:number){
+	const session = await getSession();
+	if(session.id){
+		return session.id === userId;
+	}
+	return false;
+}
 async function getTweets(tweetId: number) {
     try {
         const tweet = await db.tweet.findUnique({
@@ -18,6 +30,7 @@ async function getTweets(tweetId: number) {
                 user: {
                     select: {
                         username: true,
+						id:true,
                     },
                 },
             },
@@ -72,17 +85,17 @@ async function getResponses(tweetId: number) {
         where: {
             tweetId,
         },
-		select:{
-			id:true,
-			text: true,
-			created_at: true,
-			user: {
-				select: {
-					id:true,
-					username:true,
-				}
-			}
-		},
+        select: {
+            id: true,
+            text: true,
+            created_at: true,
+            user: {
+                select: {
+                    id: true,
+                    username: true,
+                },
+            },
+        },
     });
     return responses;
 }
@@ -90,17 +103,18 @@ async function getCachedResponses(tweetId: number) {
     const cachedOperation = nextCache(getResponses, ["tweet-responses"], {
         tags: [`tweet-responses-${tweetId}`],
     });
-	return cachedOperation(tweetId);
+    return cachedOperation(tweetId);
 }
 
 export type InitialResponses = Prisma.PromiseReturnType<typeof getResponses>;
 
+
 export default async function TweetsDetail({
     params,
 }: {
-    params: { id: string }
+    params: Promise<{ id: string }>;
 }) {
-    const id = Number(params.id);
+    const id = Number((await params).id);
     if (isNaN(id)) {
         return notFound();
     }
@@ -110,43 +124,47 @@ export default async function TweetsDetail({
     }
 
     const { likeCount, isLiked } = await getCachedLikeStatus(id);
-	const responses = await getCachedResponses(id);
+    const responses = await getCachedResponses(id);
+	const isOwner = await getIsOwner(tweets.user.id);
+
+	const handleDelete = async () => {
+		"use server";
+		await deleteTweet(id);
+	};
 
     return (
-        <div className="min-h-screen flex justify-center">
-            <div className="w-md min-h-screen pt-5">
-                <div className="max-w-2xl mx-auto mt-10 p-6 border border-gray-300 rounded shadow-sm">
-                    <div className="flex justify-between items-center mb-4">
-                        <Link
-                            href="/"
-                            className="text-blue-500 hover:underline text-sm"
-                        >
-                            ← 홈으로
-                        </Link>
-                    </div>
-
-                    <div className="space-y-3">
-                        <div className="text-sm text-gray-500">
-                            작성자:
-                            <span className="font-medium">
-                                {tweets.user.username}
-                            </span>
-                        </div>
-                        <p className="text-gray-800 text-lg">{tweets.tweet}</p>
-                        <div className="text-sm text-gray-600">
-                            작성일:{" "}
-                            {formatCreateDate(tweets.created_at.toString())}
-                        </div>
-						{/* 좋아요 버튼 영역 */}
-                        <LikeButton
-                            likeCount={likeCount}
-                            isLiked={isLiked}
-                            tweetId={id}
-                        />
-						{/* 댓글 영역 */}
-						<Responses  initialResponses={responses} tweetId={tweets.id} username={tweets.user.username}/>
-                    </div>
-                </div>
+        <div className="w-full p-6">
+            <div className="px-5">
+				<div className="relative">
+					{isOwner ? (
+						<form action={handleDelete}>
+							<button className="absolute right-0 top-[-5px] btn btn-outline btn-sm btn-secondary">Delete <TrashIcon className="size-5"/></button>
+						</form>
+					) : null}					
+					<div className="mb-3">
+						<span className="text-[16px] font-bold dark:text-white">
+							{tweets.user.username}
+						</span>
+					</div>
+					<p className="mb-3 text-gray-800 text-lg break-all dark:text-white">
+						{tweets.tweet}
+					</p>
+					<div className="text-sm text-gray-600 mb-5">
+						{formatCreateDate(tweets.created_at.toString())}
+					</div>
+				</div>
+                {/* 좋아요 버튼 영역 */}
+                <LikeButton
+                    likeCount={likeCount}
+                    isLiked={isLiked}
+                    tweetId={id}
+                />
+                {/* 댓글 영역 */}
+                <Responses
+                    initialResponses={responses}
+                    tweetId={tweets.id}
+                    username={tweets.user.username}
+                />
             </div>
         </div>
     );

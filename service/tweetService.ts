@@ -26,7 +26,7 @@ export async function getTweetsByPage(page: number){
 	const skip = (page - 1) * LIMIT_NUMBER;
 	const tweets = await db.tweet.findMany({
 		skip,
-		take: LIMIT_NUMBER + 1,
+		take: LIMIT_NUMBER,
 		include:{
 			user: true,
 		},

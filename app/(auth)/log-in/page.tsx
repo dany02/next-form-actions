@@ -8,7 +8,7 @@ import {
     FireIcon,
 } from "@heroicons/react/16/solid";
 import { loginForm } from "./action";
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect } from "react";
 import SuccessMessage from "@/components/success-message";
 import Link from "next/link";
 
@@ -16,8 +16,8 @@ export default function Login() {
     const [state, dispatch] = useActionState(loginForm, null);
 
     return (
-        <div className="w-d min-h-screen flex justify-center">
-            <div className="w-md min-h-screen pt-40">
+        <div className="min-h-screen flex justify-center">
+            <div className="w-md pt-40">
                 <FireIcon className="size-16 text-red-400 mx-auto mb-8" />
                 <form action={dispatch} className="flex flex-col gap-4">
                     <Input
