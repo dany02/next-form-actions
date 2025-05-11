@@ -9,7 +9,7 @@ import {
 import Input from "./input";
 import Button from "./button";
 import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
-import { editForm } from "@/app/(tabs)/users/[name]/edit/action";
+import { editForm } from "@/app/(tabs)/users/[username]/edit/action";
 
 interface EditFormProps {
     initialUser: {
