@@ -22,7 +22,9 @@ const eslintConfig = [
 	  "@typescript-eslint/no-unnecessary-type-constraint": "off",
 	  "@typescript-eslint/no-unused-expressions": "off",
 	  "@typescript-eslint/ban-types": "off",
-	   "@typescript-eslint/no-this-alias": "off",
+	  "@typescript-eslint/no-this-alias": "off",
+	  "@typescript-eslint/no-empty-object-type" : "off",
+	  
     },
   },
 ];
