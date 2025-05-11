@@ -21,6 +21,8 @@ const eslintConfig = [
       "@typescript-eslint/explicit-module-boundary-types": "off",
 	  "@typescript-eslint/no-unnecessary-type-constraint": "off",
 	  "@typescript-eslint/no-unused-expressions": "off",
+	  "@typescript-eslint/ban-types": "off",
+	   "@typescript-eslint/no-this-alias": "off",
     },
   },
 ];
