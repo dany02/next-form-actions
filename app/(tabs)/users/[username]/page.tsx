@@ -1,10 +1,8 @@
 import ListTweets from "@/components/list-tweets";
 import LogoutButton from "@/components/logout-button";
-import getSession from "@/lib/session";
 import { getCurrentUser, getUserProfile } from "@/service/profileServise";
-import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 export const metadata = {
 	title: "Profile",

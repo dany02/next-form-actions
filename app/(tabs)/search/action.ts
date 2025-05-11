@@ -1,7 +1,6 @@
 "use server";
-import db from "@/lib/db";
 import { checkSearch } from "@/service/searchService";
-import { string, z } from "zod";
+import { z } from "zod";
 
 const formSchema = z.object({
 	term : z.string().trim().refine(checkSearch,{message: "Sorry, no results matched your search.", path:["search"]}),

@@ -1,8 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
 import ThemeButton from "./theme-button";
-import { useEffect, useState } from "react";
-import { getUserName } from "@/service/userService";
 
 export default function Header() {
     const pathName = usePathname();

@@ -1,6 +1,5 @@
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import { string } from "zod";
+import { useEffect } from "react";
 
 export default function ThemeButton() {
     const { theme, setTheme } = useTheme();
