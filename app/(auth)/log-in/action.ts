@@ -7,8 +7,6 @@ import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
 import { checkEmailExists, checkUsernameExists } from "@/service/loginServise";
 
-export const runtime = "nodejs";
-
 const loginSchema = z.object({
     email: z
         .string()

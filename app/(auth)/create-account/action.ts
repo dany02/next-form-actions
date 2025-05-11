@@ -12,8 +12,6 @@ import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
 import { isEmailExist, isUsernameExist } from "@/service/userService";
 
-export const runtime = "nodejs";
-
 const checkPasswords = ({
     password,
     confirm_password,
