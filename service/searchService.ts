@@ -1,6 +1,6 @@
 "use server";
 import db from "@/lib/db";
-import { Prisma } from "@/lib/generated/prisma/client";
+import { Prisma } from "@prisma/client";
 
 export async function checkSearch(term:string){
 	const searchText = await db.tweet.findMany({

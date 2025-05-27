@@ -1,6 +1,6 @@
 "use server";
 import db from "@/lib/db";
-import { Prisma } from "@/lib/generated/prisma/client";
+import { Prisma } from "@prisma/client";
 
 const LIMIT_NUMBER = 5;
 export async function getInitialTweets() {

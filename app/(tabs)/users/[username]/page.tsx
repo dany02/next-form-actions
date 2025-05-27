@@ -2,7 +2,7 @@ import ListTweets from "@/components/list-tweets";
 import LogoutButton from "@/components/logout-button";
 import { getCurrentUser, getUserProfile } from "@/service/profileServise";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export const metadata = {
 	title: "Profile",
@@ -16,7 +16,7 @@ export default async function Users({
     const userExist = await getCurrentUser((await params).username);
 
     if (!userExist) {
-        return notFound();
+        redirect("/log-in");
     }
     const user = await getUserProfile((await params).username);
 

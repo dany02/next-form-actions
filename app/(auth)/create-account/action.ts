@@ -12,7 +12,6 @@ import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
 import { isEmailExist, isUsernameExist } from "@/service/userService";
 
-
 const checkPasswords = ({
     password,
     confirm_password,
